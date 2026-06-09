@@ -1,0 +1,300 @@
+import type { CaseAnalysis } from "./types";
+
+// Caso pre-horneado para demo instantáneo (no depende de la red en vivo).
+// Caso de seguros (CGP): reclamación de siniestro vs. excepción de reticencia (art. 1058 C.Co).
+// La contraparte es Firma contraparte ficticia (defiende a la aseguradora) → el demo ES el meta-demo.
+export const SAMPLE: CaseAnalysis = {
+  titulo: "Inversiones del Llano S.A.S. vs. Seguros Cóndor S.A.",
+  area: "Seguros",
+  ladoPropio: "demandante",
+  riesgoGlobal: "medio",
+  problemaJuridico: "¿Puede la aseguradora alegar reticencia (art. 1058 C.Co) para anular el contrato, cuando inspeccionó físicamente el riesgo y ajustó la prima antes de expedir la póliza?",
+  pretensiones: ["Pago de la indemnización del siniestro ($1.480 millones)", "Intereses de mora (art. 1080 C.Co)", "Costas del proceso"],
+  excepciones: ["Nulidad relativa por reticencia/inexactitud (art. 1058 C.Co)", "Inexistencia de la obligación de indemnizar"],
+  resumen:
+    "La contraparte (aseguradora, asesorada por Firma contraparte ficticia) buscará la nulidad relativa del contrato alegando reticencia del asegurado en la declaración del riesgo (art. 1058 C.Co). Su flanco: inspeccionó físicamente la bodega y ajustó la prima antes de expedir la póliza — conoció o debió conocer el riesgo.",
+  intervinientes: [
+    { id: "d1", nombre: "Inversiones del Llano S.A.S.", rol: "demandante", lado: "demandante" },
+    { id: "d2", nombre: "Seguros Cóndor S.A.", rol: "demandado", lado: "demandado" },
+    { id: "a1", nombre: "Apoderado demandante", rol: "apoderado", lado: "demandante" },
+    { id: "a2", nombre: "Firma contraparte ficticia", rol: "apoderado", lado: "demandado" },
+    { id: "t1", nombre: "Corredor de seguros", rol: "testigo", lado: "demandante" },
+    { id: "t2", nombre: "Ajustador / inspector", rol: "testigo", lado: "demandado" },
+    { id: "j1", nombre: "Juzgado Civil del Circuito", rol: "juez" },
+  ],
+  relaciones: [
+    { de: "a2", a: "d2", tipo: "apodera a" },
+    { de: "a1", a: "d1", tipo: "apodera a" },
+    { de: "t1", a: "d1", tipo: "intermedió la póliza" },
+    { de: "t2", a: "d2", tipo: "inspeccionó el riesgo" },
+  ],
+  hechos: [
+    { id: "h1", proposicion: "El 12/03/2024 se celebró la póliza de incendio No. 778-XX sobre la bodega de Villavicencio.", alegadoPor: "demandante", estado: "admitido", carga: "exento", gapProbatorio: false, riesgo: "bajo", soporte: { pieza: "demanda", folio: "3", textual: "...consta la póliza No. 778-XX expedida el 12 de marzo de 2024..." } },
+    { id: "h2", proposicion: "El 08/09/2024 un incendio destruyó la bodega asegurada.", alegadoPor: "demandante", estado: "admitido", carga: "demandante", medioPrueba: "Informe del cuerpo de bomberos", gapProbatorio: false, riesgo: "bajo", norma: { norma: "Art. 1077 C.Co", textual: "Corresponderá al asegurado demostrar la ocurrencia del siniestro, así como la cuantía de la pérdida.", jerarquia: "ley" }, soporte: { pieza: "demanda", folio: "5", textual: "...informe oficial de bomberos sobre el incendio del 8 de septiembre..." } },
+    { id: "h3", proposicion: "El asegurado omitió declarar el almacenamiento de solventes inflamables (reticencia que vició el consentimiento).", alegadoPor: "demandado", estado: "controvertido", carga: "demandado", medioPrueba: "Declaración de asegurabilidad + testimonio", gapProbatorio: false, riesgo: "alto", norma: { norma: "Art. 1058 C.Co", textual: "El tomador está obligado a declarar sinceramente los hechos o circunstancias que determinan el estado del riesgo... La reticencia o la inexactitud sobre hechos que de haberse conocido habrían retraído al asegurador de celebrar el contrato producen su nulidad relativa.", jerarquia: "ley" }, soporte: { pieza: "contestación", folio: "20", textual: "...el asegurado no declaró el almacenamiento de sustancias inflamables, configurándose reticencia..." } },
+    { id: "h4", proposicion: "Seguros Cóndor inspeccionó físicamente la bodega el 01/03/2024 y ajustó la prima un 15% con base en ello.", alegadoPor: "demandante", estado: "controvertido", carga: "demandante", cargaDinamica: true, medioPrueba: "Acta de inspección + testimonio del ajustador", gapProbatorio: false, riesgo: "medio", soporte: { pieza: "acta de inspección anexa a la demanda", folio: "8", textual: "...se observa área destinada a almacenamiento de productos químicos; se recomienda ajuste de prima del 15%..." } },
+    { id: "h5", proposicion: "El corredor informó verbalmente a la aseguradora sobre el uso de la bodega.", alegadoPor: "demandante", estado: "negado", carga: "demandante", medioPrueba: "Testimonio del corredor", gapProbatorio: true, riesgo: "alto" },
+    { id: "h6", proposicion: "La cuantía del daño asciende a $1.480 millones (peritaje).", alegadoPor: "demandante", estado: "controvertido", carga: "demandante", medioPrueba: "Dictamen pericial", gapProbatorio: false, riesgo: "medio", norma: { norma: "Art. 1077 C.Co", textual: "...así como la cuantía de la pérdida.", jerarquia: "ley" }, soporte: { pieza: "demanda", folio: "12", textual: "...dictamen pericial que cuantifica la pérdida en $1.480.000.000..." } },
+  ],
+  teoriaAdversario: {
+    lado: "demandado",
+    factica: "El asegurado conocía y ocultó deliberadamente que la bodega almacenaba solventes inflamables, agravando un riesgo no declarado; de haberlo conocido, la aseguradora no habría contratado o lo habría hecho en otras condiciones.",
+    juridica: [{ norma: "Art. 1058 C.Co", textual: "La reticencia o la inexactitud sobre hechos... que de haberse conocido habrían retraído al asegurador de celebrar el contrato... producen la nulidad relativa del seguro.", jerarquia: "ley" }],
+    probatoria: ["h3"],
+    eslabonMasDebil: "La inspección previa (h4): si la aseguradora inspeccionó y ajustó la prima, no puede alegar desconocimiento del estado del riesgo.",
+    contraArgumento: "El inciso final del art. 1058 C.Co exime de la sanción cuando el asegurador conocía o debía conocer los hechos. La inspección física y el ajuste de prima (h4) acreditan ese conocimiento y enervan la reticencia.",
+  },
+  teoriasEmergentes: [],
+  contradicciones: [
+    {
+      descripcion: "La aseguradora alega desconocer el uso de la bodega (excepción de reticencia, fol. 20), pero su propia acta de inspección (fol. 8) registra el almacenamiento de químicos y con base en ella ajustó la prima.",
+      citaA: { pieza: "contestación", folio: "20", textual: "...el asegurado no declaró el almacenamiento de sustancias inflamables, configurándose reticencia..." },
+      citaB: { pieza: "acta de inspección", folio: "8", textual: "...se observa área destinada a almacenamiento de productos químicos; se recomienda ajuste de prima del 15%..." },
+      explotacion: "Sr. representante de Seguros Cóndor: diga cómo es cierto que el acta de inspección del 1 de marzo, suscrita por su ajustador, registra el almacenamiento de productos químicos (asertiva — si evade, confesión presunta, art. 205).",
+      riesgo: "alto",
+    },
+  ],
+  interrogatorio: [
+    { hechoId: "h4", pregunta: "Diga cómo es cierto que Seguros Cóndor realizó una inspección física de la bodega antes de expedir la póliza.", finalidad: "confesion", confesionPresunta: true, mandamiento: "3 — siempre asertiva/cerrada", soporte: { pieza: "acta de inspección", folio: "8", textual: "...se observa área destinada a almacenamiento de productos químicos..." } },
+    { hechoId: "h4", pregunta: "Diga cómo es cierto que, con base en esa inspección, la aseguradora ajustó la prima en un 15%.", finalidad: "confesion", confesionPresunta: true, mandamiento: "1 — breve" },
+    { hechoId: "h3", pregunta: "Diga cómo es cierto que el acta de inspección registra el almacenamiento de productos químicos en la bodega.", finalidad: "confesion", confesionPresunta: true, mandamiento: "9 — no una pregunta de más", soporte: { pieza: "acta de inspección", folio: "8", textual: "...área destinada a almacenamiento de productos químicos..." } },
+  ],
+  testigos: [
+    { testigo: "Corredor de seguros (t1)", hechoId: "h5", pregunta: "¿Qué información transmitió usted a Seguros Cóndor sobre el uso de la bodega al intermediar la póliza?", sugestiva: false, impeachment: "Si en su declaración extraprocesal (fol. 30) afirmó haber informado el uso, confróntelo si ahora lo niega (declaración previa inconsistente)." },
+    { testigo: "Ajustador / inspector (t2)", hechoId: "h4", pregunta: "¿Usted suscribió el acta de inspección del 1 de marzo y observó el área de almacenamiento de químicos?", sugestiva: true, impeachment: "Confrontar con el acta (fol. 8) si lo niega." },
+  ],
+  alegato: {
+    tema: "La aseguradora no puede alegar como reticencia aquello que ella misma inspeccionó y tarifó.",
+    hechosProbados: ["h1", "h2", "h4", "h6"],
+    subsuncion: "Probado el siniestro y su cuantía (art. 1077 C.Co), surge la obligación de indemnizar. La excepción de reticencia (art. 1058 C.Co) no prospera: su inciso final exime la sanción cuando el asegurador conocía o debía conocer los hechos; la inspección previa y el ajuste de prima (h4) acreditan ese conocimiento. Subsumidos los hechos en el art. 1077 y enervada la excepción, procede la condena.",
+    refutacion: "La contraparte cimienta su teoría en h3 (reticencia) pero no prueba el dolo o culpa del asegurado ni desvirtúa que su propia inspección registró el riesgo; su teoría es incompleta porque no explica h4.",
+    peticion: "Condenar a Seguros Cóndor al pago de la indemnización ($1.480 millones), intereses de mora (art. 1080 C.Co) y costas.",
+  },
+  redTeam: {
+    preMortem: [
+      { causa: "El testigo corredor (h5) se cae en contraexamen; no se prueba la información verbal.", probabilidad: "medio", impacto: "medio", contramedida: "No depender de h5; anclar en h4 (acta de inspección, prueba documental que el testigo no puede negar)." },
+      { causa: "La aseguradora prueba que el asegurado ocultó dolosamente los solventes.", probabilidad: "medio", impacto: "alto", contramedida: "Neutralizar con el inciso final del art. 1058: la inspección previa elimina la relevancia de la omisión." },
+      { causa: "El juez acoge la nulidad por reticencia sin valorar la inspección.", probabilidad: "bajo", impacto: "alto", contramedida: "Insistir en alegato en el inciso final del art. 1058 y el deber de diligencia del asegurador." },
+    ],
+    debilidades: [
+      { hecho: "h5", debilidad: "La información verbal del corredor no tiene soporte documental; depende del testimonio.", comoBlindar: "Anclar la defensa en la prueba documental (h4); que el corredor ratifique por escrito.", comoLaExplotarian: "La firma contrariaatacará la credibilidad del corredor (interés/parcialidad) y pedirá tacha." },
+      { hecho: "h3", debilidad: "Riesgo de que se pruebe el almacenamiento no declarado.", comoBlindar: "Reconocer el hecho pero neutralizar su efecto con la inspección previa.", comoLaExplotarian: "Centrarán la audiencia en la declaración de asegurabilidad y el deber de informar del tomador." },
+    ],
+  },
+  perfilContraparte: {
+    firma: "Firma contraparte ficticia (hipótesis para el demo)",
+    estilo: "Técnico, riguroso, conservador-institucional. Fuertes en seguros y arbitraje. Sello declarado: preparación exhaustiva de cada audiencia.",
+    fortalezas: ["Dominio del procedimiento y de la fase de excepciones", "Argumentación de principios (socio de litigio)", "Valoración de perjuicios (socio de daños)"],
+    comoAnticipar: ["Llegarán con la teoría de reticencia impecable — no improvisar", "Atacarán la credibilidad de nuestro testigo corredor", "Forzar la inspección previa como prueba documental que no pueden negar"],
+    fuentes: [],
+  },
+  insights: [
+    { id: "i1", categoria: "contradiccion", titulo: "Inspeccionaron lo que dicen no saber", hallazgo: "La aseguradora alega que el asegurado ocultó los químicos, pero su propia acta de inspección (fol. 8) los registra y por eso subió la prima.", implicacion: "Derrumba la excepción de reticencia: ellos sí conocían el riesgo.", severidad: "alto", fuente: { pieza: "acta de inspección", folio: "8", textual: "...área destinada a almacenamiento de productos químicos; se recomienda ajuste de prima del 15%..." } },
+    { id: "i2", categoria: "oportunidad", titulo: "El art. 1058 juega a tu favor", hallazgo: "La parte final del art. 1058 dice que si el asegurador conocía o debía conocer el hecho, la reticencia se sanea: el seguro sigue válido.", implicacion: "Es tu mejor argumento jurídico — llévalo al alegato.", severidad: "alto", fuente: { pieza: "Código de Comercio", folio: "art. 1058", textual: "...las sanciones... no se aplican si el asegurador conocía o debía conocer los hechos..." } },
+    { id: "i3", categoria: "prueba", titulo: "El siniestro ya está probado", hallazgo: "El informe oficial de bomberos (fol. 5) acredita el incendio; con eso cumples la carga del art. 1077.", implicacion: "Un frente menos: el hecho del siniestro no es discutible.", severidad: "bajo", fuente: { pieza: "demanda", folio: "5", textual: "...informe oficial de bomberos sobre el incendio del 8 de septiembre..." } },
+    { id: "i4", categoria: "riesgo", titulo: "Tu testigo es el punto débil", hallazgo: "Que el corredor avisó verbalmente a la aseguradora (h5) no tiene soporte escrito: depende solo del testimonio.", implicacion: "No bases la defensa ahí; ancla en el acta (prueba documental).", severidad: "alto" },
+    { id: "i5", categoria: "procesal", titulo: "Pide la exhibición del expediente", hallazgo: "La aseguradora tiene en su poder el acta de inspección y la tarificación; el juez puede exigirle a ella aportarlas (art. 167).", implicacion: "Solicita exhibición de documentos en la audiencia inicial.", severidad: "medio", fuente: { pieza: "CGP", folio: "art. 167", textual: "...podrá... exigir probar determinado hecho a la parte que se encuentre en una situación más favorable..." } },
+    { id: "i6", categoria: "riesgo", titulo: "Cuida la cuantía", hallazgo: "Los $1.480 millones dependen del dictamen pericial (fol. 12); si el perito flaquea en el contrainterrogatorio, baja la condena.", implicacion: "Refuerza y prepara la defensa del peritaje.", severidad: "medio", fuente: { pieza: "demanda", folio: "12", textual: "...dictamen pericial que cuantifica la pérdida en $1.480.000.000..." } },
+  ],
+  documentosFicticios: [
+    { nombre: "Demanda", descripcion: "Reclama el pago del siniestro de incendio." },
+    { nombre: "Contestación + excepciones", descripcion: "La aseguradora alega reticencia (art. 1058)." },
+    { nombre: "Póliza No. 778-XX", descripcion: "El contrato de seguro de incendio." },
+    { nombre: "Acta de inspección (fol. 8)", descripcion: "Registra los químicos y el ajuste de prima — la pieza clave." },
+    { nombre: "Informe de bomberos (fol. 5)", descripcion: "Acredita la ocurrencia del incendio." },
+    { nombre: "Dictamen pericial (fol. 12)", descripcion: "Cuantifica la pérdida en $1.480M." },
+  ],
+  meta: { modelo: "sample", piiRedactado: true },
+};
+
+export const SAMPLE_LABORAL: CaseAnalysis = {
+  titulo: "Marta Rincón vs. Comercializadora Andina S.A.",
+  area: "Laboral",
+  ladoPropio: "demandante",
+  riesgoGlobal: "bajo",
+  problemaJuridico: "¿El despido fue discriminatorio por la condición de salud de la trabajadora (estabilidad ocupacional reforzada, que exige autorización del Inspector del Trabajo), o hubo una justa causa real por bajo rendimiento?",
+  pretensiones: ["Reintegro al cargo", "Indemnización de 180 días de salario (art. 26 Ley 361/1997)", "Salarios y prestaciones dejados de percibir"],
+  excepciones: ["Justa causa por bajo rendimiento (art. 62 CST)", "Inexistencia de discriminación"],
+  resumen: "El empleador sostendrá que el despido fue por bajo rendimiento, una justa causa. Su flanco: despidió a la trabajadora días después de una incapacidad médica y sin autorización del Inspector del Trabajo, pese a sus propias evaluaciones de desempeño positivas.",
+  intervinientes: [
+    { id: "d1", nombre: "Marta Rincón", rol: "demandante", lado: "demandante" },
+    { id: "d2", nombre: "Comercializadora Andina S.A.", rol: "demandado", lado: "demandado" },
+    { id: "a1", nombre: "Apoderado de la trabajadora", rol: "apoderado", lado: "demandante" },
+    { id: "a2", nombre: "Apoderado del empleador", rol: "apoderado", lado: "demandado" },
+    { id: "t1", nombre: "Jefe directo", rol: "testigo", lado: "demandado" },
+    { id: "t2", nombre: "Compañera de trabajo", rol: "testigo", lado: "demandante" },
+    { id: "j1", nombre: "Juzgado Laboral del Circuito", rol: "juez" },
+  ],
+  relaciones: [
+    { de: "a1", a: "d1", tipo: "apodera a" },
+    { de: "a2", a: "d2", tipo: "apodera a" },
+    { de: "t1", a: "d2", tipo: "firmó las evaluaciones" },
+  ],
+  hechos: [
+    { id: "h1", proposicion: "Marta trabajó 4 años como analista en la empresa.", alegadoPor: "demandante", estado: "admitido", carga: "exento", gapProbatorio: false, riesgo: "bajo", soporte: { pieza: "contrato de trabajo", folio: "2", textual: "...contrato a término indefinido del 3 de febrero de 2021..." } },
+    { id: "h2", proposicion: "En marzo de 2025 le diagnosticaron una enfermedad y tuvo varias incapacidades.", alegadoPor: "demandante", estado: "admitido", carga: "demandante", medioPrueba: "Historia clínica e incapacidades", gapProbatorio: false, riesgo: "bajo", norma: { norma: "Ley 361/1997, art. 26", textual: "Ninguna persona en situación de discapacidad podrá ser despedida... sin autorización de la oficina de Trabajo.", jerarquia: "ley" }, soporte: { pieza: "historia clínica", folio: "14", textual: "...diagnóstico e incapacidades de marzo a abril de 2025..." } },
+    { id: "h3", proposicion: "El empleador despidió a Marta alegando bajo rendimiento como justa causa.", alegadoPor: "demandado", estado: "controvertido", carga: "demandado", medioPrueba: "Carta de despido", gapProbatorio: false, riesgo: "alto", norma: { norma: "CST, art. 62", textual: "Son justas causas... el deficiente rendimiento en el trabajo...", jerarquia: "ley" }, soporte: { pieza: "carta de despido", folio: "12", textual: "...se termina el contrato por bajo rendimiento en sus funciones..." } },
+    { id: "h4", proposicion: "Las evaluaciones de desempeño de 2024 calificaron a Marta como 'sobresaliente'.", alegadoPor: "demandante", estado: "controvertido", carga: "demandante", cargaDinamica: true, medioPrueba: "Evaluaciones de desempeño", gapProbatorio: false, riesgo: "medio", soporte: { pieza: "evaluación de desempeño 2024", folio: "20", textual: "...calificación global: SOBRESALIENTE; cumple y supera los objetivos..." } },
+    { id: "h5", proposicion: "El despido ocurrió 8 días después de reintegrarse de una incapacidad.", alegadoPor: "demandante", estado: "controvertido", carga: "demandante", medioPrueba: "Cotejo de fechas", gapProbatorio: false, riesgo: "medio", soporte: { pieza: "incapacidad y carta", folio: "12, 16", textual: "...reintegro el 7 de abril; despido del 15 de abril de 2025..." } },
+    { id: "h6", proposicion: "El empleador no solicitó autorización al Inspector del Trabajo para el despido.", alegadoPor: "demandante", estado: "admitido", carga: "demandado", medioPrueba: "Ausencia de acto administrativo", gapProbatorio: false, riesgo: "alto", norma: { norma: "Sent. SU-049/2017", textual: "...se presume discriminatorio el despido de quien está en debilidad manifiesta por salud sin autorización del Inspector del Trabajo.", jerarquia: "jurisprudencia" } },
+  ],
+  teoriaAdversario: {
+    lado: "demandado",
+    factica: "La trabajadora tuvo desempeño deficiente y reiterado; el despido obedeció a esa causa objetiva, no a su salud, que la empresa respetó con todas las incapacidades.",
+    juridica: [{ norma: "CST, art. 62-A", textual: "...el deficiente rendimiento en relación con la capacidad del trabajador... es justa causa...", jerarquia: "ley" }],
+    probatoria: ["h3"],
+    eslabonMasDebil: "La empresa nunca documentó el bajo rendimiento con requerimientos previos, y sus propias evaluaciones (h4) dicen lo contrario.",
+    contraArgumento: "Por la estabilidad ocupacional reforzada (SU-049/2017, art. 26 Ley 361/97) el despido sin autorización se presume discriminatorio; la carga de probar la justa causa real recae en el empleador, que se contradice con sus evaluaciones positivas.",
+  },
+  teoriasEmergentes: [],
+  contradicciones: [
+    { descripcion: "El empleador alega 'bajo rendimiento' (carta fol. 12), pero las evaluaciones que él mismo firmó (fol. 20) califican a la trabajadora 'sobresaliente'.", citaA: { pieza: "carta de despido", folio: "12", textual: "...por bajo rendimiento en sus funciones..." }, citaB: { pieza: "evaluación de desempeño 2024", folio: "20", textual: "...calificación global: SOBRESALIENTE..." }, explotacion: "Diga cómo es cierto que la última evaluación de desempeño, firmada por la empresa, calificó a la trabajadora como 'sobresaliente' (asertiva — si evade, confesión presunta art. 205).", riesgo: "alto" },
+  ],
+  interrogatorio: [
+    { hechoId: "h4", pregunta: "Diga cómo es cierto que la empresa calificó a la trabajadora 'sobresaliente' en su evaluación de 2024.", finalidad: "confesion", confesionPresunta: true, mandamiento: "3 — asertiva", soporte: { pieza: "evaluación", folio: "20", textual: "...SOBRESALIENTE..." } },
+    { hechoId: "h6", pregunta: "Diga cómo es cierto que la empresa no pidió autorización al Inspector del Trabajo antes del despido.", finalidad: "confesion", confesionPresunta: true, mandamiento: "1 — breve" },
+    { hechoId: "h3", pregunta: "Diga cómo es cierto que nunca se le formuló un llamado de atención escrito por bajo rendimiento.", finalidad: "confesion", confesionPresunta: true },
+  ],
+  testigos: [
+    { testigo: "Jefe directo (t1)", hechoId: "h3", pregunta: "¿Usted formuló algún requerimiento escrito por bajo rendimiento durante 2024?", sugestiva: true, impeachment: "Confrontar con la evaluación 'sobresaliente' que él firmó (fol. 20)." },
+    { testigo: "Compañera (t2)", hechoId: "h5", pregunta: "¿Qué cambió en el trato de la empresa hacia Marta tras sus incapacidades?", sugestiva: false },
+  ],
+  alegato: {
+    tema: "No se despide por 'bajo rendimiento' a quien la propia empresa calificó como sobresaliente — y menos sin autorización, estando enferma.",
+    hechosProbados: ["h1", "h2", "h4", "h6"],
+    subsuncion: "Acreditada la condición de salud (h2) y el despido sin autorización (h6), opera la presunción de discriminación (SU-049/2017, art. 26 Ley 361/97): la carga de probar la justa causa pasa al empleador, que no la prueba y se contradice con sus evaluaciones (h4). Procede reintegro e indemnización de 180 días.",
+    refutacion: "La excepción de 'bajo rendimiento' (art. 62 CST) no prospera: no hay un solo requerimiento previo y las evaluaciones dicen lo contrario.",
+    peticion: "Declarar ineficaz el despido, ordenar el reintegro y condenar a la indemnización de 180 días y a los salarios dejados de percibir.",
+  },
+  redTeam: {
+    preMortem: [
+      { causa: "El empleador prueba requerimientos escritos previos por bajo rendimiento.", probabilidad: "bajo", impacto: "alto", contramedida: "Pedir exhibición de la hoja de vida laboral; si no los aporta, resaltar su ausencia." },
+      { causa: "El juez no reconoce la estabilidad reforzada por salud.", probabilidad: "bajo", impacto: "alto", contramedida: "SU-049/2017: basta la debilidad manifiesta conocida por el empleador, sin calificación de invalidez." },
+      { causa: "El nexo incapacidad–despido se ve como coincidencia.", probabilidad: "medio", impacto: "medio", contramedida: "Reforzar cronología (h5) y falta de autorización (h6) como indicios concordantes." },
+    ],
+    debilidades: [
+      { hecho: "h5", debilidad: "La cercanía temporal es indicio, no prueba directa del motivo.", comoBlindar: "Sumarla a la falta de autorización y a las evaluaciones positivas.", comoLaExplotarian: "Dirán que el despido fue por una reestructuración." },
+      { hecho: "h2", debilidad: "Discutirán si la enfermedad llega a 'debilidad manifiesta'.", comoBlindar: "Acreditar el conocimiento del empleador, no la gravedad clínica.", comoLaExplotarian: "Minimizarán el diagnóstico para negar la estabilidad reforzada." },
+    ],
+  },
+  perfilContraparte: {
+    firma: "Firma laboralista de empresas (hipótesis)",
+    estilo: "Defensa corporativa: busca acreditar justa causa objetiva y minimizar la discriminación.",
+    fortalezas: ["Manejo del régimen disciplinario y del CST", "Documentación de procesos internos"],
+    comoAnticipar: ["Mostrarán 'bajo rendimiento' con métricas — pídeles los requerimientos escritos", "Minimizarán el diagnóstico — ancla en el conocimiento del empleador y la falta de autorización"],
+  },
+  insights: [
+    { id: "l1", categoria: "contradiccion", titulo: "Sobresaliente y despedida por 'bajo rendimiento'", hallazgo: "La empresa dice que la despidió por rendir mal, pero su propia evaluación (fol. 20) la calificó 'sobresaliente'.", implicacion: "Tu mejor carta: derrumba la justa causa con su propio documento.", severidad: "alto", fuente: { pieza: "evaluación de desempeño", folio: "20", textual: "...SOBRESALIENTE..." } },
+    { id: "l2", categoria: "oportunidad", titulo: "La presunción está de tu lado", hallazgo: "Como había una condición de salud y no pidieron autorización, la ley presume que el despido fue discriminatorio (SU-049/2017).", implicacion: "La carga de probar la justa causa pasa al empleador.", severidad: "alto", fuente: { pieza: "Sentencia", folio: "SU-049/2017", textual: "...se presume discriminatorio el despido sin autorización del Inspector..." } },
+    { id: "l3", categoria: "procesal", titulo: "Falta un acto que debía existir", hallazgo: "No hay autorización del Inspector del Trabajo, y para este despido era obligatoria.", implicacion: "Incumplimiento objetivo, fácil de probar por su sola ausencia.", severidad: "alto" },
+    { id: "l4", categoria: "prueba", titulo: "La cronología habla", hallazgo: "La despidieron 8 días después de volver de incapacidad.", implicacion: "Indicio fuerte del verdadero motivo.", severidad: "medio", fuente: { pieza: "carta de despido", folio: "12", textual: "...despido del 15 de abril de 2025..." } },
+    { id: "l5", categoria: "riesgo", titulo: "Te falta el 'antes'", hallazgo: "No tienes prueba de qué pasó antes del diagnóstico; podrían inventar un historial de bajo rendimiento.", implicacion: "Pide la hoja de vida laboral por exhibición.", severidad: "medio" },
+    { id: "l6", categoria: "oportunidad", titulo: "180 días de indemnización", hallazgo: "Además del reintegro, la Ley 361/97 art. 26 ordena 180 días de salario.", implicacion: "Cuantifícala y pídela.", severidad: "bajo", fuente: { pieza: "Ley 361/1997", folio: "art. 26", textual: "...indemnización equivalente a ciento ochenta (180) días del salario..." } },
+  ],
+  documentosFicticios: [
+    { nombre: "Demanda", descripcion: "Pide reintegro e indemnización por despido discriminatorio." },
+    { nombre: "Contestación + excepciones", descripcion: "El empleador alega justa causa por bajo rendimiento." },
+    { nombre: "Carta de despido (fol. 12)", descripcion: "Invoca 'bajo rendimiento'." },
+    { nombre: "Evaluación de desempeño (fol. 20)", descripcion: "Califica a la trabajadora 'sobresaliente' — la pieza clave." },
+    { nombre: "Historia clínica (fol. 14)", descripcion: "Acredita la condición de salud." },
+  ],
+  meta: { modelo: "sample", piiRedactado: true },
+};
+
+export const SAMPLE_CONSTRUCCION: CaseAnalysis = {
+  titulo: "Conjunto Las Acacias vs. Constructora Vértice S.A.S.",
+  area: "Construcción",
+  ladoPropio: "demandante",
+  riesgoGlobal: "medio",
+  problemaJuridico: "¿Responde la constructora por las filtraciones bajo la garantía de estabilidad de la obra (art. 2060 C.C.), o el 'recibo a satisfacción' firmado por el contratante la exonera?",
+  pretensiones: ["Reparación de los vicios de construcción", "Indemnización de perjuicios", "Cláusula penal pactada"],
+  excepciones: ["Recibo a satisfacción de la obra", "Prescripción / caducidad de la garantía"],
+  resumen: "La constructora se escudará en las actas de 'recibo a satisfacción'. Su flanco: el informe de interventoría previo a la entrega ya reportaba filtraciones, y los reclamos se hicieron dentro del término de garantía de estabilidad.",
+  intervinientes: [
+    { id: "d1", nombre: "Conjunto Las Acacias (P.H.)", rol: "demandante", lado: "demandante" },
+    { id: "d2", nombre: "Constructora Vértice S.A.S.", rol: "demandado", lado: "demandado" },
+    { id: "a1", nombre: "Apoderado de la copropiedad", rol: "apoderado", lado: "demandante" },
+    { id: "a2", nombre: "Apoderado de la constructora", rol: "apoderado", lado: "demandado" },
+    { id: "t1", nombre: "Interventor de la obra", rol: "testigo", lado: "demandante" },
+    { id: "p1", nombre: "Perito ingeniero", rol: "perito", lado: "demandante" },
+    { id: "j1", nombre: "Juzgado Civil del Circuito", rol: "juez" },
+  ],
+  relaciones: [
+    { de: "a1", a: "d1", tipo: "apodera a" },
+    { de: "a2", a: "d2", tipo: "apodera a" },
+    { de: "t1", a: "d1", tipo: "elaboró la interventoría" },
+  ],
+  hechos: [
+    { id: "h1", proposicion: "Vértice construyó y entregó el edificio en 2023 conforme al contrato.", alegadoPor: "demandante", estado: "admitido", carga: "exento", gapProbatorio: false, riesgo: "bajo", soporte: { pieza: "contrato de obra", folio: "3", textual: "...construcción del edificio Las Acacias, entrega en junio de 2023..." } },
+    { id: "h2", proposicion: "En 2024 aparecieron filtraciones graves que afectan la estabilidad.", alegadoPor: "demandante", estado: "controvertido", carga: "demandante", medioPrueba: "Dictamen pericial", gapProbatorio: false, riesgo: "medio", norma: { norma: "C.C., art. 2060 num. 3", textual: "...si el edificio perece o amenaza ruina por vicio de la construcción... el empresario es responsable dentro de los diez años subsiguientes a su entrega.", jerarquia: "ley" }, soporte: { pieza: "dictamen pericial", folio: "30", textual: "...filtraciones por defecto de impermeabilización; compromete elementos estructurales..." } },
+    { id: "h3", proposicion: "El contratante firmó acta de recibo de la obra (excepción de la constructora).", alegadoPor: "demandado", estado: "controvertido", carga: "demandado", medioPrueba: "Acta de recibo", gapProbatorio: false, riesgo: "alto", soporte: { pieza: "acta de recibo", folio: "15", textual: "...se recibe la obra a satisfacción..." } },
+    { id: "h4", proposicion: "El informe de interventoría previo a la entrega ya reportaba humedades y filtraciones incipientes.", alegadoPor: "demandante", estado: "controvertido", carga: "demandante", cargaDinamica: true, medioPrueba: "Informe de interventoría", gapProbatorio: false, riesgo: "medio", soporte: { pieza: "informe de interventoría", folio: "8", textual: "...se observan humedades y filtraciones incipientes en cubierta; corregir antes de la entrega..." } },
+    { id: "h5", proposicion: "La copropiedad reclamó por escrito dentro del término de garantía.", alegadoPor: "demandante", estado: "controvertido", carga: "demandante", medioPrueba: "Comunicaciones", gapProbatorio: false, riesgo: "medio", soporte: { pieza: "comunicación de reclamo", folio: "22", textual: "...se requiere la reparación dentro del plazo de garantía..." } },
+    { id: "h6", proposicion: "La constructora ofreció verbalmente reparar y luego se retractó.", alegadoPor: "demandante", estado: "negado", carga: "demandante", medioPrueba: "Testimonio del administrador", gapProbatorio: true, riesgo: "alto" },
+    { id: "h7", proposicion: "El costo de la reparación asciende a $620 millones (peritaje).", alegadoPor: "demandante", estado: "controvertido", carga: "demandante", medioPrueba: "Dictamen pericial", gapProbatorio: false, riesgo: "medio", soporte: { pieza: "dictamen pericial", folio: "32", textual: "...costo estimado de la reparación: $620.000.000..." } },
+  ],
+  teoriaAdversario: {
+    lado: "demandado",
+    factica: "La obra se entregó correctamente y el contratante la recibió a satisfacción sin reparos; las filtraciones son por falta de mantenimiento de la copropiedad, no por vicio de construcción.",
+    juridica: [{ norma: "C.C., art. 1602", textual: "Todo contrato legalmente celebrado es una ley para los contratantes...", jerarquia: "ley" }],
+    probatoria: ["h3"],
+    eslabonMasDebil: "El recibo a satisfacción no purga la garantía de estabilidad del art. 2060, y su propio interventor (h4) ya había reportado las filtraciones antes de la entrega.",
+    contraArgumento: "El art. 2060 num. 3 C.C. consagra una garantía decenal de estabilidad que el recibo a satisfacción no extingue; además el vicio no era oculto para la constructora: su interventoría lo registró antes de entregar.",
+  },
+  teoriasEmergentes: [],
+  contradicciones: [
+    { descripcion: "La constructora invoca el 'recibo a satisfacción sin reparos' (acta fol. 15), pero el informe de interventoría previo (fol. 8) ya registraba las filtraciones que ahora niega.", citaA: { pieza: "acta de recibo", folio: "15", textual: "...se recibe la obra a satisfacción..." }, citaB: { pieza: "informe de interventoría", folio: "8", textual: "...filtraciones incipientes en cubierta; corregir antes de la entrega..." }, explotacion: "Diga cómo es cierto que la interventoría de la propia obra reportó filtraciones en la cubierta antes de la entrega (asertiva — si evade, confesión presunta art. 205).", riesgo: "alto" },
+  ],
+  interrogatorio: [
+    { hechoId: "h4", pregunta: "Diga cómo es cierto que el informe de interventoría, anterior a la entrega, reportó filtraciones en la cubierta.", finalidad: "confesion", confesionPresunta: true, mandamiento: "3 — asertiva", soporte: { pieza: "interventoría", folio: "8", textual: "...filtraciones incipientes en cubierta..." } },
+    { hechoId: "h3", pregunta: "Diga cómo es cierto que la constructora conocía esas observaciones al pedir la firma del acta de recibo.", finalidad: "confesion", confesionPresunta: true },
+    { hechoId: "h2", pregunta: "Diga cómo es cierto que las filtraciones comprometen elementos estructurales del edificio.", finalidad: "declaracion", confesionPresunta: false, soporte: { pieza: "dictamen", folio: "30", textual: "...compromete elementos estructurales..." } },
+  ],
+  testigos: [
+    { testigo: "Interventor (t1)", hechoId: "h4", pregunta: "¿Usted dejó constancia escrita de las filtraciones antes de la entrega?", sugestiva: false, impeachment: "Confrontar con su informe (fol. 8) si lo matiza." },
+    { testigo: "Perito (p1)", hechoId: "h2", pregunta: "¿La causa de las filtraciones es un defecto de construcción o de mantenimiento?", sugestiva: false },
+  ],
+  alegato: {
+    tema: "La constructora no puede recibir 'a satisfacción' lo que su propio interventor ya había marcado como defectuoso.",
+    hechosProbados: ["h1", "h2", "h4", "h7"],
+    subsuncion: "Probado el vicio de construcción dentro de la garantía decenal (art. 2060 num. 3 C.C.) y su conocimiento previo (h4), surge la responsabilidad de la constructora. El recibo a satisfacción (art. 1602) no purga la garantía de estabilidad. Procede la condena a reparar e indemnizar.",
+    refutacion: "La excepción de recibo a satisfacción no prospera: la garantía del art. 2060 es de orden público y el vicio no era oculto para quien lo registró en su interventoría.",
+    peticion: "Condenar a reparar los vicios, pagar la indemnización ($620 millones) y la cláusula penal.",
+  },
+  redTeam: {
+    preMortem: [
+      { causa: "El recibo a satisfacción se interpreta como renuncia a reclamar.", probabilidad: "medio", impacto: "alto", contramedida: "La garantía decenal (art. 2060) es indisponible y el vicio era conocido (h4)." },
+      { causa: "El perito atribuye las filtraciones a mantenimiento.", probabilidad: "medio", impacto: "alto", contramedida: "Anclar en la interventoría (h4), anterior a cualquier uso de la copropiedad." },
+      { causa: "Se discute si el reclamo fue dentro del término de garantía.", probabilidad: "bajo", impacto: "medio", contramedida: "Probar la fecha del reclamo (h5) con los radicados." },
+    ],
+    debilidades: [
+      { hecho: "h6", debilidad: "El ofrecimiento verbal de reparar no tiene soporte escrito.", comoBlindar: "No depender de él; centrar el caso en la interventoría.", comoLaExplotarian: "Negarán el ofrecimiento y pedirán tachar al administrador por interés." },
+      { hecho: "h2", debilidad: "La causa técnica depende del dictamen pericial.", comoBlindar: "Blindar el peritaje y alinearlo con la interventoría.", comoLaExplotarian: "Aportarán un contraperitaje que culpe al mantenimiento." },
+    ],
+  },
+  perfilContraparte: {
+    firma: "Firma de construcción e inmobiliario (hipótesis)",
+    estilo: "Defensa técnica-contractual: se apoya en actas y plazos; trae contraperitaje.",
+    fortalezas: ["Manejo de contratos de obra y actas", "Argumentación técnica con peritos propios"],
+    comoAnticipar: ["Se escudarán en el recibo a satisfacción — golpéalo con la interventoría", "Traerán contraperitaje de mantenimiento — alinea perito + interventor"],
+  },
+  insights: [
+    { id: "c1", categoria: "contradiccion", titulo: "Recibieron 'a satisfacción' lo que ya estaba malo", hallazgo: "La constructora dice que entregó sin defectos, pero su propia interventoría (fol. 8) ya había reportado las filtraciones.", implicacion: "Tu mejor carta: su documento desmiente su excepción.", severidad: "alto", fuente: { pieza: "interventoría", folio: "8", textual: "...filtraciones incipientes en cubierta..." } },
+    { id: "c2", categoria: "oportunidad", titulo: "Garantía de 10 años", hallazgo: "El art. 2060 del Código Civil hace responsable al constructor por la estabilidad de la obra durante 10 años, aunque haya acta de recibo.", implicacion: "El recibo a satisfacción no te cierra la puerta.", severidad: "alto", fuente: { pieza: "Código Civil", folio: "art. 2060", textual: "...responsable dentro de los diez años subsiguientes a su entrega." } },
+    { id: "c3", categoria: "prueba", titulo: "El daño está peritado", hallazgo: "El dictamen acredita que las filtraciones son por defecto de construcción y cuesta $620M repararlas.", implicacion: "Sostiene causa y cuantía; protégelo en el contrainterrogatorio.", severidad: "medio", fuente: { pieza: "dictamen", folio: "30", textual: "...filtraciones por defecto de impermeabilización..." } },
+    { id: "c4", categoria: "riesgo", titulo: "El ofrecimiento verbal no sirve", hallazgo: "Que la constructora ofreció reparar y se retractó (h6) no tiene prueba escrita.", implicacion: "No bases el caso ahí; ancla en la interventoría.", severidad: "alto" },
+    { id: "c5", categoria: "procesal", titulo: "Verifica el término de garantía", hallazgo: "El reclamo (fol. 22) debe estar dentro del plazo; tienes los radicados.", implicacion: "Anticipa la excepción de caducidad con las fechas.", severidad: "medio", fuente: { pieza: "reclamo", folio: "22", textual: "...dentro del plazo de garantía..." } },
+    { id: "c6", categoria: "oportunidad", titulo: "Pide la carga dinámica", hallazgo: "La constructora tiene los planos, bitácoras y el expediente técnico; el juez puede exigirle aportarlos.", implicacion: "Solicita su exhibición: están en mejor posición de probar.", severidad: "medio", fuente: { pieza: "CGP", folio: "art. 167", textual: "...exigir probar... a la parte que se encuentre en una situación más favorable..." } },
+  ],
+  documentosFicticios: [
+    { nombre: "Demanda", descripcion: "Reclama reparación, perjuicios y cláusula penal." },
+    { nombre: "Contestación + excepciones", descripcion: "La constructora alega recibo a satisfacción." },
+    { nombre: "Contrato de obra (fol. 3)", descripcion: "El acuerdo y la garantía." },
+    { nombre: "Acta de recibo (fol. 15)", descripcion: "El 'recibo a satisfacción' de la constructora." },
+    { nombre: "Informe de interventoría (fol. 8)", descripcion: "Reportó las filtraciones antes de la entrega — la pieza clave." },
+    { nombre: "Dictamen pericial (fol. 30-32)", descripcion: "Causa técnica y costo de la reparación." },
+  ],
+  meta: { modelo: "sample", piiRedactado: true },
+};
+
+export const SAMPLES: CaseAnalysis[] = [SAMPLE, SAMPLE_LABORAL, SAMPLE_CONSTRUCCION];
