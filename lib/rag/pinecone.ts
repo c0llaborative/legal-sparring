@@ -21,8 +21,8 @@ export async function upsertCaso(indexName: string, casoId: string, chunks: Chun
 
 export async function queryCaso(indexName: string, casoId: string, query: string, k = 5) {
   if (!process.env.PINECONE_API_KEY) throw new Error("Falta PINECONE_API_KEY");
-  const qv = (await embed([query]))?.[0];
-  if (!qv) throw new Error("Faltan embeddings (OPENAI_API_KEY)");
+  const qv = (await embed([query], "query"))?.[0];
+  if (!qv) throw new Error("Faltan embeddings (PINECONE_API_KEY u OPENAI_API_KEY)");
   const { Pinecone } = await import("@pinecone-database/pinecone");
   const index = new Pinecone().index(indexName);
   const res = await index.namespace(casoId).query({ vector: qv, topK: k, includeMetadata: true });

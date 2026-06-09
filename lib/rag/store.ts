@@ -23,7 +23,7 @@ export class MemoryStore {
     const bmRank = rankIdx(this.bm25.score(query));
     let vecRank: number[] | null = null;
     if (this.vectors) {
-      const qv = (await embed([query]))?.[0];
+      const qv = (await embed([query], "query"))?.[0];
       if (qv) vecRank = rankIdx(this.vectors.map((v) => cosine(qv, v)));
     }
     // Reciprocal Rank Fusion
