@@ -77,9 +77,17 @@ ELEVENLABS_API_KEY=...                          # voz (opcional; tier gratis sir
 ELEVENLABS_VOICE_ID=pNInz6obpgDQGcFmaJgB        # voz válida en tier gratis (Adam)
 ```
 
+## Arquitectura avanzada (montada, opt-in)
+
+Tres subsistemas listos para subir de MVP a producción (detalle en [`CLAUDE.md`](CLAUDE.md)):
+
+- **Orquestación · LangGraph.js + verificador** (`lib/graph/`): el análisis se descompone en un grafo de nodos (extracción → estrategia → evaluación → **verificador**) con un guard de grounding que **regenera** si las citas no se sostienen en el expediente. Se activa con `POST /api/analyze { ..., modo: "grafo" }`.
+- **RAG legal-aware** (`lib/rag/`): full-context por defecto; para escalar, retriever **híbrido BM25 + vector (RRF)** con **folio en metadata**, y adaptador **Pinecone** para cartera. Demo en `POST /api/rag`.
+- **Anonimización · Presidio NER local** (`presidio/`): microservicio FastAPI (spaCy ES + cédula/NIT) que reemplaza PII antes del LLM; la app lo usa vía `PRESIDIO_URL` con fallback al regex.
+
 ## Deploy
 
-Listo para **Vercel** (`vercel`). Configura las env vars en el dashboard de Vercel.
+Listo para **Vercel** (`vercel`). Configura las env vars en el dashboard de Vercel. El gateway Presidio se despliega aparte (Docker).
 
 ---
 

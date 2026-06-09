@@ -51,6 +51,27 @@ Expediente → `redactPII` (anonimiza) → OpenRouter con salida JSON (`response
 ## Cómo agregar un caso de muestra
 Crear un objeto `CaseAnalysis` en `lib/sample.ts` y agregarlo al array `SAMPLES`. Seguir el patrón de los existentes: ~6 hechos (uno con `gapProbatorio`, uno con `cargaDinamica`), una **contradicción** con su pregunta asertiva, `insights` en lenguaje simple, `documentosFicticios`, `problemaJuridico`, `pretensiones`/`excepciones`.
 
+## Arquitectura avanzada (montada en el repo, opt-in)
+Tres subsistemas para subir de MVP a producción:
+
+### 1. Orquestación — LangGraph.js con verificador (`lib/graph/`)
+- `graph.ts`: StateGraph de 4 nodos: **extracción → estrategia → evaluación → verificador → (reintenta estrategia | fin)**.
+- `nodes.ts`: cada nodo produce una parte del `CaseAnalysis` vía OpenRouter (`llm.ts`).
+- `verify.ts`: guard determinista de grounding (`citaEnTexto`) — comprueba que cada cita exista literalmente en el expediente; si >35% no se sostienen, el grafo **regenera la estrategia** (1 reintento) avisándole al nodo qué citas fallaron.
+- Se activa con `POST /api/analyze { texto, lado, modo: "grafo" }`. Sin `modo` = una sola llamada (`analizarExpediente`, más rápido). El resultado trae `verificacion: { total, verificadas, sinSoporte }`.
+
+### 2. RAG legal-aware (`lib/rag/`) — para escalar
+- Default de la app: **full-context** (mete el expediente entero al LLM); más preciso para un caso.
+- `chunk.ts`: chunking con **folio y pieza en metadata** (la cita sigue anclada). `bm25.ts`: léxico. `embeddings.ts`: vector (OpenAI, opcional). `store.ts`: híbrido BM25+vector con **RRF**.
+- `pinecone.ts`: adaptador para buscar across **muchos casos** (cartera).
+- Demo: `POST /api/rag { texto, query, k }` → top-k chunks con su folio.
+- Cuándo usarlo: expediente que no cabe en contexto, o búsqueda en cartera. **No** es el path por defecto.
+
+### 3. Anonimización — Presidio NER local (`presidio/`)
+- Microservicio FastAPI (Presidio + spaCy ES + recognizers de cédula/NIT) que reemplaza PII por tokens reversibles `[TIPO_n]`.
+- `lib/redaction.ts` → `redactPIIAsync` lo usa si `PRESIDIO_URL` está definido; si no, cae al regex local (`redactPII`).
+- Correr: `cd presidio && docker build -t ls-presidio . && docker run -p 8088:8088 ls-presidio`, y poner `PRESIDIO_URL=http://localhost:8088` en `.env.local`.
+
 ## Convenciones
 - Español neutro en la UI y el contenido jurídico.
 - Componentes en `components/` ("use client" donde haya estado/efectos).

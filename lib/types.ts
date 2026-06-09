@@ -77,5 +77,6 @@ export interface CaseAnalysis {
   interrogatorio: PreguntaParte[]; testigos: PreguntaTestigo[]; alegato: Alegato;
   redTeam: RedTeam; perfilContraparte?: PerfilContraparte;
   insights?: Insight[]; documentosFicticios?: DocFicticio[];
+  verificacion?: { total: number; verificadas: number; sinSoporte: string[]; ratio: number };
   meta?: { modelo: string; piiRedactado: boolean };
 }

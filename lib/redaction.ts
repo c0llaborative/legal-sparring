@@ -30,3 +30,23 @@ export function rehydrate(text: string, map: Record<string, string>): string {
   for (const [t, v] of Object.entries(map)) out = out.split(t).join(v);
   return out;
 }
+
+// Gateway de anonimización: usa el microservicio Presidio (NER) si PRESIDIO_URL está definido,
+// con fallback al redactor regex local. Así el LLM nunca ve datos personales en crudo.
+export async function redactPIIAsync(text: string): Promise<Redaction> {
+  const url = process.env.PRESIDIO_URL;
+  if (url) {
+    try {
+      const r = await fetch(`${url.replace(/\/+$/, "")}/redact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, language: "es" }),
+      });
+      if (r.ok) {
+        const d = await r.json();
+        if (typeof d?.redacted === "string") return { redacted: d.redacted, map: d.map || {} };
+      }
+    } catch { /* cae al regex local */ }
+  }
+  return redactPII(text);
+}

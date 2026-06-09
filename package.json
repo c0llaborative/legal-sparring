@@ -1,5 +1,5 @@
 {
-  "name": "entrenador-litigios",
+  "name": "legal-sparring",
   "version": "0.1.0",
   "private": true,
   "scripts": { "dev": "next dev", "build": "next build", "start": "next start" },
@@ -9,7 +9,10 @@
     "react-dom": "18.3.1",
     "openai": "^4.56.0",
     "pdf-parse": "^1.1.1",
-    "mammoth": "^1.8.0"
+    "mammoth": "^1.8.0",
+    "@langchain/langgraph": "^0.2.74",
+    "@langchain/core": "^0.3.40",
+    "@pinecone-database/pinecone": "^4.1.0"
   },
   "devDependencies": {
     "typescript": "^5.5.4",
