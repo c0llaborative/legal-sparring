@@ -8,6 +8,19 @@ Construido para el Hackathon LegalTech (reto Esguerra JHR). Marca: JSTH (Juan To
 
 ---
 
+## Estado actual (verificado en local)
+
+| Capa | Estado |
+|---|---|
+| **App + IA** | `openrouter: true` · `elevenlabs: true` · 3 casos de muestra (seguros, laboral, construcción) · diagnóstico general · scores con rúbrica + historial · sparring por voz · guía |
+| **RAG híbrido** (`/api/rag`) | ✓ Verificado: modo **"híbrido (BM25 + vector, RRF)"** · embeddings vía **Pinecone hosted inference** (`multilingual-e5-large` — funciona con solo `PINECONE_API_KEY`, sin OpenAI) · recupera chunks con su **folio** en metadata |
+| **LangGraph + verificador** (`/api/analyze` con `modo:"grafo"`) | ✓ Verificado: corre 4 nodos (extracción → estrategia → evaluación → **verificador**) · guard de grounding **10/10 citas verificadas** contra el expediente · reintenta si fallan · modelo `… · grafo` |
+| **Anonimización** | Regex local por defecto · gateway **Presidio NER** (`presidio/`) opt-in vía `PRESIDIO_URL` |
+
+> Latencia: `modo:"grafo"` es el path **robusto opt-in** (~150s; 4–5 llamadas + verificación). El análisis por defecto (una sola llamada) es ~20–30s.
+
+---
+
 ## Arranque rápido
 
 ```bash
@@ -55,16 +68,21 @@ Next.js 14 (App Router) · React 18 · TypeScript · Tailwind + Design System pr
 Expediente (PDF/Word/texto) → [redactPII] → OpenRouter (salida JSON estructurada)
         → CaseAnalysis (el contrato, lib/types.ts) → la UI consume el contrato
 
-app/api/analyze   expediente → análisis estructurado (CaseAnalysis)
+app/api/analyze   expediente → análisis (CaseAnalysis); con modo:"grafo" usa LangGraph
 app/api/spar      turno de sparring
 app/api/tts       voz del adversario (ElevenLabs → fallback navegador)
 app/api/extract   PDF/Word → texto
+app/api/rag       demo del RAG híbrido (top-k chunks con su folio)
 app/api/status    qué keys están activas (para el indicador de la UI)
 lib/types.ts      el contrato CaseAnalysis (fuente de verdad)
 lib/prompts.ts    cadena de razonamiento (CREAC + CGP + grounding)
-lib/anthropic.ts  cliente OpenRouter
+lib/anthropic.ts  cliente OpenRouter (análisis de una sola llamada)
 lib/sample.ts     3 casos pre-horneados (demo sin API)
 lib/scoring.ts    scores deterministas (Kit, Sala Roja)
+lib/redaction.ts  anonimización (regex local + gateway Presidio)
+lib/graph/        orquestación LangGraph.js: nodos + verificador (verify.ts)
+lib/rag/          RAG legal-aware: chunk · bm25 · embeddings · store (RRF) · pinecone
+presidio/         microservicio de anonimización NER (FastAPI + spaCy ES)
 components/        Workspace (tabs) · Diagnóstico · Kit · Sparring · Grafo · ScorePanel · Guia
 ```
 
