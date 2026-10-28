@@ -1,0 +1,13 @@
+# Verified false positives (2026-10-28). Everything else uses the default rules.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Verified false positives"
+regexes = [
+  # lib/history.ts: the localStorage key name for the score history, not a secret.
+  '''el_historial_v1''',
+  # .env.example: empty ELEVENLABS_API_KEY followed by a voice ID. A voice ID is a
+  # public identifier; every ElevenLabs call needs the account's API key.
+  '''^ELEVENLABS_VOICE_ID=''',
+]
