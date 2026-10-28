@@ -4,7 +4,7 @@
 
 > No resume el expediente: **anticipa la estrategia del adversario.**
 
-Construido para el Hackathon LegalTech (reto Esguerra JHR). Marca: JSTH (Juan Torres).
+Construido por Juan Torres y Sebastián León para el Hackathon LegalTech (reto Esguerra JHR). Marca: JSTH (Juan Torres).
 
 ---
 
@@ -110,3 +110,7 @@ Listo para **Vercel** (`vercel`). Configura las env vars en el dashboard de Verc
 ---
 
 Más para desarrolladores en [`CLAUDE.md`](CLAUDE.md) · explicación en simple en [`LEEME.md`](LEEME.md).
+
+## Autores
+
+Juan Torres ([@juanth11](https://github.com/juanth11)) y Sebastián León ([@c0llaborative](https://github.com/c0llaborative)) desarrollaron juntos la idea y el producto. El repositorio original es de Juan; esta copia omite los materiales del pitch y usa una firma ficticia en el caso de muestra.
